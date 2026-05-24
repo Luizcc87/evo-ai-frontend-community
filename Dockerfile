@@ -47,6 +47,8 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 # "/bin/sh\r" -> "exec: no such file or directory". See EVO-2020.
 RUN sed -i 's/\r$//' /docker-entrypoint.sh \
     && chmod +x /docker-entrypoint.sh
+COPY docker-entrypoint.d/ /docker-entrypoint.d/
+RUN chmod +x /docker-entrypoint.d/*.sh
 
 # Expose port
 EXPOSE 80

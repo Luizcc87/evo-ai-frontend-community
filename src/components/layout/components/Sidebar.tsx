@@ -14,6 +14,7 @@ import MenuItem from './MenuItem';
 import { MenuItem as MenuItemType } from '../config/menuItems';
 import { cn } from '@/utils/cn';
 import { PluginSlot } from '@/plugin-host';
+import { brandingConfig } from '@/branding/config';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -43,8 +44,11 @@ export default function Sidebar({
   // Tracks previous activeSubmenu to distinguish "newly opened" from "switched between submenus"
   const prevActiveSubmenuRef = useRef<MenuItemType | null>(null);
 
-  const companyName = t('sidebar.footer.brand');
-  const supportWhatsappUrl = 'https://api.whatsapp.com/send/?phone=553196219989&text=Ol%C3%A1%21+Preciso+de+suporte.&type=phone_number&app_absent=0';
+  const companyName = brandingConfig.appName;
+  const docsUrl = brandingConfig.docsUrl;
+  const supportUrl = brandingConfig.supportUrl;
+  const copyrightText = brandingConfig.copyrightText ||
+    t('sidebar.footer.copyright', { year: currentYear });
 
   const totalUnread = useUnreadConversationsStore((state) => state.totalUnread);
 
@@ -226,7 +230,7 @@ export default function Sidebar({
               <>
                 <div className="text-sm text-primary font-medium">{companyName}</div>
                 <div className="text-xs text-muted-foreground mt-1">
-                  {t('sidebar.footer.copyright', { year: currentYear })}
+                  {copyrightText}
                 </div>
                 {__APP_VERSION__ !== 'dev' && (
                   <div className="text-xs text-muted-foreground/70 mt-1">
@@ -234,22 +238,26 @@ export default function Sidebar({
                   </div>
                 )}
                 <div className="mt-2 flex flex-col gap-1 text-xs">
-                  <a
-                    href="https://docs.evolutionfoundation.com.br/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {t('sidebar.footer.documentation')}
-                  </a>
-                  <a
-                    href={supportWhatsappUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {t('sidebar.footer.support')}
-                  </a>
+                  {docsUrl && (
+                    <a
+                      href={docsUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {t('sidebar.footer.documentation')}
+                    </a>
+                  )}
+                  {supportUrl && (
+                    <a
+                      href={supportUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {t('sidebar.footer.support')}
+                    </a>
+                  )}
                 </div>
               </>
             )}

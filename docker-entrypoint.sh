@@ -11,17 +11,41 @@ set -e
 
 HTML_DIR="/usr/share/nginx/html"
 
-# Replace VITE_* variables in all JS files
-# The build uses empty strings or defaults — we replace them at runtime
-for file in $(find "$HTML_DIR" -name '*.js' -type f); do
-  # Replace each VITE_* env var if set
-  [ -n "$VITE_API_URL" ] && sed -i "s|VITE_API_URL_PLACEHOLDER|${VITE_API_URL}|g" "$file"
-  [ -n "$VITE_AUTH_API_URL" ] && sed -i "s|VITE_AUTH_API_URL_PLACEHOLDER|${VITE_AUTH_API_URL}|g" "$file"
-  [ -n "$VITE_WS_URL" ] && sed -i "s|VITE_WS_URL_PLACEHOLDER|${VITE_WS_URL}|g" "$file"
-  [ -n "$VITE_EVOAI_API_URL" ] && sed -i "s|VITE_EVOAI_API_URL_PLACEHOLDER|${VITE_EVOAI_API_URL}|g" "$file"
-  [ -n "$VITE_AGENT_PROCESSOR_URL" ] && sed -i "s|VITE_AGENT_PROCESSOR_URL_PLACEHOLDER|${VITE_AGENT_PROCESSOR_URL}|g" "$file"
+# Fill runtime defaults so placeholders are never left in the built app just
+# because one optional VITE_* variable was omitted from the container env.
+: "${VITE_API_URL:=http://localhost:3000}"
+: "${VITE_AUTH_API_URL:=$VITE_API_URL}"
+: "${VITE_EVOAI_API_URL:=$VITE_API_URL}"
+: "${VITE_AGENT_PROCESSOR_URL:=$VITE_API_URL}"
+
+if [ -z "$VITE_WS_URL" ]; then
+  case "$VITE_API_URL" in
+    https://*) VITE_WS_URL="wss://${VITE_API_URL#https://}" ;;
+    http://*) VITE_WS_URL="ws://${VITE_API_URL#http://}" ;;
+    *) VITE_WS_URL="$VITE_API_URL" ;;
+  esac
+fi
+
+echo "Runtime config: VITE_API_URL=$VITE_API_URL"
+echo "Runtime config: VITE_AUTH_API_URL=$VITE_AUTH_API_URL"
+echo "Runtime config: VITE_WS_URL=$VITE_WS_URL"
+echo "Runtime config: VITE_EVOAI_API_URL=$VITE_EVOAI_API_URL"
+echo "Runtime config: VITE_AGENT_PROCESSOR_URL=$VITE_AGENT_PROCESSOR_URL"
+
+# Replace VITE_* variables in built assets (js, css, html).
+for file in $(find "$HTML_DIR" \( -name '*.js' -o -name '*.css' -o -name '*.html' \) -type f); do
+  sed -i "s|VITE_API_URL_PLACEHOLDER|${VITE_API_URL}|g" "$file"
+  sed -i "s|VITE_AUTH_API_URL_PLACEHOLDER|${VITE_AUTH_API_URL}|g" "$file"
+  sed -i "s|VITE_WS_URL_PLACEHOLDER|${VITE_WS_URL}|g" "$file"
+  sed -i "s|VITE_EVOAI_API_URL_PLACEHOLDER|${VITE_EVOAI_API_URL}|g" "$file"
+  sed -i "s|VITE_AGENT_PROCESSOR_URL_PLACEHOLDER|${VITE_AGENT_PROCESSOR_URL}|g" "$file"
   [ -n "$VITE_EVOFLOW_API_URL" ] && sed -i "s|VITE_EVOFLOW_API_URL_PLACEHOLDER|${VITE_EVOFLOW_API_URL}|g" "$file"
 done
+
+if grep -R "VITE_.*_PLACEHOLDER" "$HTML_DIR" >/dev/null 2>&1; then
+  echo "WARNING: unresolved VITE placeholders remain in built assets:"
+  grep -R "VITE_.*_PLACEHOLDER" "$HTML_DIR" || true
+fi
 
 # Configure nginx CSP based on environment (default: development)
 # The CSP shipped in nginx.conf is the production default: img-src/media-src
@@ -60,5 +84,6 @@ case "$VITE_API_URL" in
     ;;
 esac
 
+[ -f /docker-entrypoint.d/branding-entrypoint.sh ] && sh /docker-entrypoint.d/branding-entrypoint.sh
 
 exec "$@"

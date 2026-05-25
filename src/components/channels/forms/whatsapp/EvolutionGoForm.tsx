@@ -3,7 +3,9 @@ import { FormField } from '../../shared/FormField';
 import { FormCheckbox } from '../../shared/FormCheckbox';
 import { FormSection } from '../../shared/FormSection';
 import { FormData } from '@/hooks/channels/useChannelForm';
+import { sanitizeInboxName } from '@/utils/sanitizeName';
 import { PhoneInput } from '@/components/shared/PhoneInput';
+import { ProxyPanel } from './ProxyPanel';
 
 interface EvolutionGoFormProps {
   form: FormData;
@@ -15,6 +17,11 @@ export const EvolutionGoForm = ({ form, onFormChange, hasEvolutionGoConfig }: Ev
   const { t } = useLanguage('whatsapp');
   const getStr = (key: string, fallback = ''): string =>
     typeof form[key] === 'string' ? (form[key] as string) : fallback;
+
+  const handleDisplayNameChange = (value: string) => {
+    onFormChange('display_name', value);
+    onFormChange('name', sanitizeInboxName(value));
+  };
 
   return (
     <div className="space-y-6">
@@ -41,7 +48,27 @@ export const EvolutionGoForm = ({ form, onFormChange, hasEvolutionGoConfig }: Ev
         </>
       )}
 
-      <div data-tour="whatsapp-credentials">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-tour="whatsapp-credentials">
+        <FormField
+          label={t('evolutionGoForm.fields.displayName.label')}
+          value={getStr('display_name')}
+          onChange={handleDisplayNameChange}
+          placeholder={t('evolutionGoForm.fields.displayName.placeholder')}
+          helpText={t('evolutionGoForm.fields.displayName.helpText')}
+          required
+        />
+        <FormField
+          label={t('evolutionGoForm.fields.channelName.label')}
+          value={getStr('name')}
+          onChange={value => onFormChange('name', value)}
+          placeholder={t('evolutionGoForm.fields.channelName.placeholder')}
+          helpText={t('evolutionGoForm.fields.channelName.helpText')}
+          required
+          readOnly
+        />
+      </div>
+
+      <div>
         <label className="text-sm font-medium text-sidebar-foreground/80 block mb-1">
           {t('evolutionGoForm.fields.phoneNumber.label')} <span className="text-destructive">*</span>
         </label>
@@ -73,6 +100,11 @@ export const EvolutionGoForm = ({ form, onFormChange, hasEvolutionGoConfig }: Ev
           type="password"
           readOnly
         />
+      )}
+
+      {/* Proxy management — only shown after instance is created */}
+      {getStr('instance_uuid') && (
+        <ProxyPanel instanceUuid={getStr('instance_uuid')} />
       )}
 
       {/* Advanced Settings - Evolution Go */}

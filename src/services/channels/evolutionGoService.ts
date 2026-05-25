@@ -70,17 +70,31 @@ const EvolutionGoService = {
     return extractData<any>(response);
   },
 
-  async setProxy(
-    params: { apiUrl: string; apiHash: string; instanceName: string; proxySettings: object },
-  ) {
-    const requestData = {
-      api_url: params.apiUrl,
-      api_hash: params.apiHash,
-      instance_name: params.instanceName,
-      proxy_settings: params.proxySettings,
-    };
+  async getProxyStatus(instanceUuid: string) {
+    const response = await api.get('/evolution_go/proxy', {
+      params: { instance_uuid: instanceUuid },
+    });
+    return extractData<any>(response);
+  },
 
-    const response = await api.post('/evolution_go/proxy', requestData);
+  async setProxy(instanceUuid: string, proxy: {
+    protocol?: string;
+    host: string;
+    port: string;
+    username?: string;
+    password?: string;
+  }) {
+    const response = await api.post('/evolution_go/proxy', {
+      instance_uuid: instanceUuid,
+      proxy,
+    });
+    return extractData<any>(response);
+  },
+
+  async deleteProxy(instanceUuid: string) {
+    const response = await api.delete('/evolution_go/proxy', {
+      params: { instance_uuid: instanceUuid },
+    });
     return extractData<any>(response);
   },
 

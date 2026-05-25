@@ -67,11 +67,19 @@ class JourneyService {
     } catch (error: any) {
       console.error('Erro ao criar jornada:', error);
 
-      // Usar formato padrão de erro: { success: false, error: { code, message, details }, meta }
-      const errorMessage =
-        error?.response?.data?.error?.message ||
-        error?.response?.data?.message ||
-        'Erro ao criar jornada';
+      let errorMessage = 'Não foi possível criar a jornada. Tente novamente em alguns instantes.';
+      
+      if (!error.response) {
+        errorMessage = 'Falha de conexão com o servidor. Verifique sua internet ou tente novamente mais tarde.';
+      } else if (error.response.status === 405) {
+        errorMessage = 'Erro de configuração no servidor (Método não permitido). Verifique a URL da API.';
+      } else if (typeof error.response.data === 'object' && error.response.data !== null) {
+        errorMessage =
+          error.response.data?.error?.message ||
+          error.response.data?.message ||
+          errorMessage;
+      }
+
       throw new Error(errorMessage);
     }
   }

@@ -16,6 +16,7 @@ HTML_DIR="/usr/share/nginx/html"
 : "${VITE_API_URL:=http://localhost:3000}"
 : "${VITE_AUTH_API_URL:=$VITE_API_URL}"
 : "${VITE_EVOAI_API_URL:=$VITE_API_URL}"
+: "${VITE_EVOFLOW_API_URL:=$VITE_API_URL}"
 : "${VITE_AGENT_PROCESSOR_URL:=$VITE_API_URL}"
 
 if [ -z "$VITE_WS_URL" ]; then
@@ -30,6 +31,7 @@ echo "Runtime config: VITE_API_URL=$VITE_API_URL"
 echo "Runtime config: VITE_AUTH_API_URL=$VITE_AUTH_API_URL"
 echo "Runtime config: VITE_WS_URL=$VITE_WS_URL"
 echo "Runtime config: VITE_EVOAI_API_URL=$VITE_EVOAI_API_URL"
+echo "Runtime config: VITE_EVOFLOW_API_URL=$VITE_EVOFLOW_API_URL"
 echo "Runtime config: VITE_AGENT_PROCESSOR_URL=$VITE_AGENT_PROCESSOR_URL"
 
 # Replace VITE_* variables in built assets (js, css, html).
@@ -38,6 +40,7 @@ for file in $(find "$HTML_DIR" \( -name '*.js' -o -name '*.css' -o -name '*.html
   sed -i "s|VITE_AUTH_API_URL_PLACEHOLDER|${VITE_AUTH_API_URL}|g" "$file"
   sed -i "s|VITE_WS_URL_PLACEHOLDER|${VITE_WS_URL}|g" "$file"
   sed -i "s|VITE_EVOAI_API_URL_PLACEHOLDER|${VITE_EVOAI_API_URL}|g" "$file"
+  sed -i "s|VITE_EVOFLOW_API_URL_PLACEHOLDER|${VITE_EVOFLOW_API_URL}|g" "$file"
   sed -i "s|VITE_AGENT_PROCESSOR_URL_PLACEHOLDER|${VITE_AGENT_PROCESSOR_URL}|g" "$file"
   [ -n "$VITE_EVOFLOW_API_URL" ] && sed -i "s|VITE_EVOFLOW_API_URL_PLACEHOLDER|${VITE_EVOFLOW_API_URL}|g" "$file"
 done

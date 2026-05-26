@@ -6,6 +6,7 @@ import EvolutionGoService from '@/services/channels/evolutionGoService';
 type ProxyStatus =
   | 'inactive'
   | 'configured'
+  | 'connected'
   | 'active'
   | 'slow'
   | 'error'
@@ -41,6 +42,7 @@ const POLL_INTERVAL_MS = 30_000;
 const STATUS_BADGE: Record<ProxyStatus, { label: string; color: string }> = {
   active: { label: 'Ativo', color: 'bg-green-500' },
   configured: { label: 'Configurado', color: 'bg-blue-500' },
+  connected: { label: 'Em uso', color: 'bg-green-500' },
   slow: { label: 'Lento', color: 'bg-yellow-500' },
   error: { label: 'Erro', color: 'bg-red-500' },
   inactive: { label: 'Sem proxy', color: 'bg-slate-400' },

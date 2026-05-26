@@ -3,11 +3,20 @@ import { FormField } from '../../shared/FormField';
 import { FormSection } from '../../shared/FormSection';
 import EvolutionGoService from '@/services/channels/evolutionGoService';
 
-type ProxyStatus = 'inactive' | 'configured' | 'active' | 'slow' | 'error' | 'unavailable' | 'loading';
+type ProxyStatus =
+  | 'inactive'
+  | 'configured'
+  | 'active'
+  | 'slow'
+  | 'error'
+  | 'unavailable'
+  | 'loading';
 
 interface ProxyHealth {
   instanceId?: string;
   proxyAddress?: string;
+  proxyUsername?: string;
+  hasAuth?: boolean;
   status: ProxyStatus;
   lastCheck?: string;
   latencyMs?: number;
@@ -30,13 +39,13 @@ interface ProxyPanelProps {
 const POLL_INTERVAL_MS = 30_000;
 
 const STATUS_BADGE: Record<ProxyStatus, { label: string; color: string }> = {
-  active:      { label: 'Ativo',         color: 'bg-green-500' },
-  configured:  { label: 'Configurado',   color: 'bg-blue-500' },
-  slow:        { label: 'Lento',          color: 'bg-yellow-500' },
-  error:       { label: 'Erro',           color: 'bg-red-500' },
-  inactive:    { label: 'Sem proxy',      color: 'bg-slate-400' },
-  unavailable: { label: 'Indisponível',   color: 'bg-red-500' },
-  loading:     { label: 'Verificando…',   color: 'bg-slate-300' },
+  active: { label: 'Ativo', color: 'bg-green-500' },
+  configured: { label: 'Configurado', color: 'bg-blue-500' },
+  slow: { label: 'Lento', color: 'bg-yellow-500' },
+  error: { label: 'Erro', color: 'bg-red-500' },
+  inactive: { label: 'Sem proxy', color: 'bg-slate-400' },
+  unavailable: { label: 'Indisponível', color: 'bg-red-500' },
+  loading: { label: 'Verificando…', color: 'bg-slate-300' },
 };
 
 function formatRelative(iso?: string): string {
@@ -52,7 +61,13 @@ export function ProxyPanel({ instanceUuid }: ProxyPanelProps) {
   const [saving, setSaving] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [saveError, setSaveError] = useState('');
-  const [form, setForm] = useState<ProxyForm>({ protocol: 'http', host: '', port: '', username: '', password: '' });
+  const [form, setForm] = useState<ProxyForm>({
+    protocol: 'http',
+    host: '',
+    port: '',
+    username: '',
+    password: '',
+  });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchStatus = async () => {
@@ -69,8 +84,11 @@ export function ProxyPanel({ instanceUuid }: ProxyPanelProps) {
             protocol: match[1] || 'http',
             host: match[2] || '',
             port: match[3] || '',
+            username: data.proxyUsername || f.username,
           }));
         }
+      } else if (data.proxyUsername && !form.username) {
+        setForm(f => ({ ...f, username: data.proxyUsername || f.username }));
       }
     } catch {
       setHealth({ status: 'unavailable', error: 'Não foi possível contatar o Evolution Go' });
@@ -140,7 +158,9 @@ export function ProxyPanel({ instanceUuid }: ProxyPanelProps) {
             <span className="text-xs text-muted-foreground">{health.latencyMs}ms</span>
           )}
           {health.lastCheck && (
-            <span className="text-xs text-muted-foreground">{formatRelative(health.lastCheck)}</span>
+            <span className="text-xs text-muted-foreground">
+              {formatRelative(health.lastCheck)}
+            </span>
           )}
         </div>
         <button
@@ -161,12 +181,32 @@ export function ProxyPanel({ instanceUuid }: ProxyPanelProps) {
       )}
 
       {/* Config form */}
-      <div className="space-y-3 border-t border-gray-200/20 pt-4">
-        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Configurar Proxy</p>
+      <div className="space-y-3 border-t border-gray-200/20 pt-4" data-form-type="other">
+        <input
+          type="text"
+          name="username"
+          autoComplete="username"
+          tabIndex={-1}
+          className="hidden"
+          aria-hidden="true"
+        />
+        <input
+          type="password"
+          name="password"
+          autoComplete="current-password"
+          tabIndex={-1}
+          className="hidden"
+          aria-hidden="true"
+        />
+        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+          Configurar Proxy
+        </p>
 
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="text-sm font-medium text-sidebar-foreground/80 block mb-1">Protocolo</label>
+            <label className="text-sm font-medium text-sidebar-foreground/80 block mb-1">
+              Protocolo
+            </label>
             <select
               value={form.protocol}
               onChange={e => setForm(f => ({ ...f, protocol: e.target.value }))}
@@ -202,6 +242,9 @@ export function ProxyPanel({ instanceUuid }: ProxyPanelProps) {
             value={form.username}
             onChange={v => setForm(f => ({ ...f, username: v }))}
             placeholder=""
+            autoComplete="off"
+            name={`evolution_go_proxy_user_${instanceUuid}`}
+            dataFormType="other"
           />
         </div>
 
@@ -211,6 +254,9 @@ export function ProxyPanel({ instanceUuid }: ProxyPanelProps) {
           onChange={v => setForm(f => ({ ...f, password: v }))}
           placeholder=""
           type="password"
+          autoComplete="new-password"
+          name={`evolution_go_proxy_secret_${instanceUuid}`}
+          dataFormType="other"
         />
 
         {saveError && <p className="text-xs text-destructive">{saveError}</p>}

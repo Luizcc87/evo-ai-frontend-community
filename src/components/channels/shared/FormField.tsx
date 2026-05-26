@@ -10,6 +10,9 @@ interface FormFieldProps {
   helpText?: string;
   className?: string;
   readOnly?: boolean;
+  autoComplete?: string;
+  name?: string;
+  dataFormType?: string;
 }
 
 export const FormField = ({
@@ -22,6 +25,9 @@ export const FormField = ({
   helpText,
   className,
   readOnly = false,
+  autoComplete,
+  name,
+  dataFormType,
 }: FormFieldProps) => {
   return (
     <div className={`space-y-2 ${className || ''}`}>
@@ -34,6 +40,11 @@ export const FormField = ({
         value={value}
         onChange={e => onChange(e.target.value)}
         type={type}
+        autoComplete={autoComplete}
+        name={name}
+        data-lpignore="true"
+        data-1p-ignore="true"
+        data-form-type={dataFormType}
         required={required}
         readOnly={readOnly}
         disabled={readOnly}
@@ -41,9 +52,7 @@ export const FormField = ({
           readOnly ? 'cursor-not-allowed opacity-60 bg-sidebar-border/50' : ''
         }`}
       />
-      {helpText && (
-        <p className="text-xs text-sidebar-foreground/60 mt-1">{helpText}</p>
-      )}
+      {helpText && <p className="text-xs text-sidebar-foreground/60 mt-1">{helpText}</p>}
     </div>
   );
 };

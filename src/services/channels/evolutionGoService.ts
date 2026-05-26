@@ -49,6 +49,7 @@ const EvolutionGoService = {
         instance_name: params.instanceName,
         phone_number: params.phoneNumber,
         mode: params.mode,
+        proxy_settings: params.proxySettings,
         instance_settings: params.instanceSettings,
       },
     };
@@ -84,7 +85,7 @@ const EvolutionGoService = {
     username?: string;
     password?: string;
   }) {
-    const response = await api.post('/evolution_go/proxy', {
+    const response = await api.put('/evolution_go/proxy', {
       instance_uuid: instanceUuid,
       proxy,
     });

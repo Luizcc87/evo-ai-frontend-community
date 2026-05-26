@@ -35,6 +35,7 @@ import {
 import { EvolutionApiService, ZapiService } from '@/services/channels/channelConfigurationService';
 import InboxesService from '@/services/channels/inboxesService';
 import { useGlobalConfig } from '@/contexts/GlobalConfigContext';
+import { ProxyPanel } from '../forms/whatsapp/ProxyPanel';
 
 interface ConfigurationFormProps {
   inboxId: string;
@@ -1015,6 +1016,8 @@ const EvolutionWhatsAppConfig: React.FC<{
     );
   }
 
+  const instanceIdentifier = getIdentifier();
+
   return (
     <div className="space-y-6">
       {/* Instance Status */}
@@ -1092,6 +1095,10 @@ const EvolutionWhatsAppConfig: React.FC<{
           </div>
         </DialogContent>
       </Dialog>
+
+      {isEvolutionGo && instanceIdentifier && (
+        <ProxyPanel instanceUuid={instanceIdentifier} />
+      )}
 
       {/* Profile Settings - Only show when connected */}
       {instanceStatus === 'open' && (

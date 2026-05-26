@@ -160,6 +160,16 @@ export const useChannelSubmission = (form?: FormData) => {
             instanceName: getStr(form, 'instance_name') || getStr(form, 'name'),
             phoneNumber: getStr(form, 'phone_number'),
             mode: 'test',
+            proxySettings: form.proxy_enabled
+              ? {
+                  enabled: true,
+                  host: getStr(form, 'proxy_host'),
+                  port: getStr(form, 'proxy_port'),
+                  protocol: getStr(form, 'proxy_protocol', 'http'),
+                  username: getStr(form, 'proxy_username'),
+                  password: getStr(form, 'proxy_password'),
+                }
+              : { enabled: false },
             instanceSettings: {
               alwaysOnline: !!form.alwaysOnline,
               rejectCall: !!form.rejectCall,
@@ -602,6 +612,16 @@ export const useChannelSubmission = (form?: FormData) => {
               instanceName: getStr(form, 'instance_name') || getStr(form, 'name'),
               phoneNumber: getStr(form, 'phone_number'),
               mode: 'create',
+              proxySettings: form.proxy_enabled
+                ? {
+                    enabled: true,
+                    host: getStr(form, 'proxy_host'),
+                    port: getStr(form, 'proxy_port'),
+                    protocol: getStr(form, 'proxy_protocol', 'http'),
+                    username: getStr(form, 'proxy_username'),
+                    password: getStr(form, 'proxy_password'),
+                  }
+                : { enabled: false },
               instanceSettings: {
                 alwaysOnline: !!form.alwaysOnline,
                 rejectCall: !!form.rejectCall,
@@ -637,6 +657,15 @@ export const useChannelSubmission = (form?: FormData) => {
               read_messages: !!form.readMessages,
               ignore_groups: !!form.ignoreGroups,
               ignore_status: !!form.ignoreStatus,
+              proxy_settings: form.proxy_enabled
+                ? {
+                    enabled: true,
+                    host: getStr(form, 'proxy_host'),
+                    port: getStr(form, 'proxy_port'),
+                    protocol: getStr(form, 'proxy_protocol', 'http'),
+                    username: getStr(form, 'proxy_username'),
+                  }
+                : { enabled: false },
             };
 
             // 🔒 SECURITY: Only send api_url/admin_token if NOT using global config

@@ -119,6 +119,12 @@ export const useChannelForm = () => {
           api_url: prev.api_url || '',
           admin_token: prev.admin_token || '',
           instance_name: prev.instance_name || prev.name || '',
+          proxy_enabled: prev.proxy_enabled ?? false,
+          proxy_host: prev.proxy_host || '',
+          proxy_port: prev.proxy_port || '',
+          proxy_protocol: prev.proxy_protocol || 'http',
+          proxy_username: prev.proxy_username || '',
+          proxy_password: prev.proxy_password || '',
           // Evolution Go instance settings defaults
           alwaysOnline: prev.alwaysOnline ?? true,
           rejectCall: prev.rejectCall ?? true,

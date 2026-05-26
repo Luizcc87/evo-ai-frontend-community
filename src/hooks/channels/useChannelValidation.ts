@@ -137,6 +137,16 @@ export const useChannelValidation = () => {
         return false;
       }
     }
+    if (form.proxy_enabled) {
+      if (!getStr(form, 'proxy_host').trim()) {
+        toast.error('Host do proxy é obrigatório quando proxy está habilitado');
+        return false;
+      }
+      if (!getStr(form, 'proxy_port').trim()) {
+        toast.error('Porta do proxy é obrigatória quando proxy está habilitado');
+        return false;
+      }
+    }
     // Validate phone number format (E.164)
     const phonePattern = /^\+[1-9]\d{1,14}$/;
     if (!phonePattern.test(getStr(form, 'phone_number'))) {

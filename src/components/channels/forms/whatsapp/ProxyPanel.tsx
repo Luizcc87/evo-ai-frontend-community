@@ -3,7 +3,7 @@ import { FormField } from '../../shared/FormField';
 import { FormSection } from '../../shared/FormSection';
 import EvolutionGoService from '@/services/channels/evolutionGoService';
 
-type ProxyStatus = 'inactive' | 'active' | 'slow' | 'error' | 'unavailable' | 'loading';
+type ProxyStatus = 'inactive' | 'configured' | 'active' | 'slow' | 'error' | 'unavailable' | 'loading';
 
 interface ProxyHealth {
   instanceId?: string;
@@ -31,6 +31,7 @@ const POLL_INTERVAL_MS = 30_000;
 
 const STATUS_BADGE: Record<ProxyStatus, { label: string; color: string }> = {
   active:      { label: 'Ativo',         color: 'bg-green-500' },
+  configured:  { label: 'Configurado',   color: 'bg-blue-500' },
   slow:        { label: 'Lento',          color: 'bg-yellow-500' },
   error:       { label: 'Erro',           color: 'bg-red-500' },
   inactive:    { label: 'Sem proxy',      color: 'bg-slate-400' },

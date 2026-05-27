@@ -16,8 +16,20 @@ export function AppLogo({ className, alt = brandingConfig.appName, style, forceT
   const { theme } = useDarkMode();
   const effectiveTheme = forceTheme ?? theme;
   const defaultSrc = effectiveTheme === 'dark' ? logoDark : logoLight;
-  const isCustomLogo = brandingConfig.logoUrl !== '/logo.svg';
-  const [src, setSrc] = useState(isCustomLogo ? brandingConfig.logoUrl : defaultSrc);
+  const [src, setSrc] = useState(brandingConfig.hasCustomLogo ? brandingConfig.logoUrl : defaultSrc);
+
+  if (brandingConfig.hasCustomAppName && !brandingConfig.hasCustomLogo) {
+    return (
+      <span
+        role="img"
+        aria-label={alt || brandingConfig.appName}
+        className={className}
+        style={style}
+      >
+        {brandingConfig.appName}
+      </span>
+    );
+  }
 
   return (
     <img

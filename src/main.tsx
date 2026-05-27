@@ -8,8 +8,11 @@ import './i18n/config'; // Importar configuração do i18n
 import App from './App.tsx';
 import { initTheme } from './utils/themeUtils';
 import { initGA4 } from './utils/ga4Utils';
+import { applyBrandingFavicon } from './branding/config';
 // Inicialização do tema antes do React montar
 initTheme();
+
+applyBrandingFavicon();
 
 // Inicialização do Google Analytics 4
 initGA4();

@@ -8,6 +8,9 @@ describe('brandingConfig', () => {
       appTitle: '__APP_TITLE_PLACEHOLDER__',
       logoUrl: '__APP_LOGO_URL_PLACEHOLDER__',
       faviconUrl: '__APP_FAVICON_URL_PLACEHOLDER__',
+      docsUrl: '__APP_DOCS_URL_PLACEHOLDER__',
+      supportUrl: '__APP_SUPPORT_URL_PLACEHOLDER__',
+      copyrightText: '__APP_COPYRIGHT_PLACEHOLDER__',
     });
   });
 
@@ -16,7 +19,12 @@ describe('brandingConfig', () => {
       appName: 'Evo CRM',
       appTitle: 'Evo CRM',
       logoUrl: '/logo.svg',
-      faviconUrl: '/logo.svg',
+      faviconUrl: '/favicon.svg',
+      docsUrl: 'https://docs.evolutionfoundation.com.br/',
+      supportUrl: 'https://api.whatsapp.com/send/?phone=553196219989&text=Ol%C3%A1%21+Preciso+de+suporte.&type=phone_number&app_absent=0',
+      copyrightText: '',
+      hasCustomAppName: false,
+      hasCustomLogo: false,
     });
   });
 

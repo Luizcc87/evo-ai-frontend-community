@@ -340,19 +340,36 @@
     "deleteSuccess": "Ferramenta personalizada deletada com sucesso",
     "deleteError": "Erro ao deletar ferramenta personalizada",
     "testSuccess": "Teste executado com sucesso",
-    "testError": "Erro ao testar ferramenta personalizada",
-    "applyFiltersError": "Erro ao aplicar filtros"
+    "testError": "Erro ao testar ferramenta personalizada"
   },
-  "deleteDialog": {
-    "title": "Excluir Ferramenta Personalizada",
-    "description": "Tem certeza que deseja excluir a ferramenta \"{{name}}\"? Esta ação não pode ser desfeita.",
-    "cancel": "Cancelar",
-    "confirm": "Excluir"
+  "success": {
+    "testSuccess": "Teste executado com sucesso. Status: {{statusCode}}. Tempo: {{responseTime}}s",
+    "deleteSuccess": "Ferramenta personalizada eliminada com sucesso",
+    "updateSuccess": "Ferramenta personalizada atualizada com sucesso",
+    "createSuccess": "Ferramenta personalizada criada com sucesso"
+  },
+  "errors": {
+    "loadError": "Erro ao carregar ferramentas personalizadas",
+    "applyFiltersError": "Erro ao aplicar filtros",
+    "testError": "Erro ao testar ferramenta personalizada",
+    "deleteError": "Erro ao eliminar ferramenta personalizada",
+    "updateError": "Erro ao atualizar ferramenta personalizada",
+    "createError": "Erro ao criar ferramenta personalizada"
   },
   "permissions": {
-    "viewDenied": "Você não tem permissão para ver ferramentas personalizadas",
-    "createDenied": "Você não tem permissão para criar ferramentas personalizadas",
-    "editDenied": "Você não tem permissão para editar ferramentas personalizadas",
-    "deleteDenied": "Você não tem permissão para excluir ferramentas personalizadas"
+    "viewDenied": "Não tem permissão para visualizar ferramentas personalizadas",
+    "createDenied": "Não tem permissão para criar ferramentas personalizadas",
+    "editDenied": "Não tem permissão para editar ferramentas personalizadas",
+    "deleteDenied": "Não tem permissão para eliminar ferramentas personalizadas"
+  },
+  "test": {
+    "failed": "Teste falhou: {{error}}",
+    "unknownError": "erro desconhecido"
+  },
+  "deleteDialog": {
+    "title": "Eliminar ferramenta personalizada",
+    "description": "Tem certeza de que deseja eliminar esta ferramenta personalizada? Esta ação não pode ser desfeita.",
+    "cancel": "Cancelar",
+    "confirm": "Eliminar"
   }
 }
